@@ -46,6 +46,7 @@ t('maa.pi.error.cannot-find-task', taskName)
 - `maa.crop.*` — 裁剪工具
 - `maa.screencap.*` — 快速截图命令
 - `maa.shortcut.*` — 全局快捷键目标和运行控制提示
+- `maa.mpe.*` — MaaPipelineEditor 集成与节点导航
 - `maa.eval.*` — 表达式求值
 
 ## 版本语义

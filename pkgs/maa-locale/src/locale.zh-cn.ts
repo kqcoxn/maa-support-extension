@@ -39,6 +39,14 @@ export default {
   'maa.pi.error.generate-runtime-failed': '生成配置失败: {0}',
   'maa.pi.warning.require-admin': '控制器需要管理员权限',
 
+  'maa.mpe.title.select-node-definition': '选择节点 {0} 的定义',
+  'maa.mpe.error.no-resource': '当前没有可用的 Pipeline 资源',
+  'maa.mpe.error.node-not-found': '未找到节点: {0}',
+  'maa.mpe.error.open-node-failed': '无法在 MPE 中打开节点: {0}',
+  'maa.mpe.error.navigation-failed': '节点跳转失败: {0}',
+  'maa.mpe.info.navigation-cancelled': '已取消节点跳转',
+  'maa.mpe.info.node-opened': '已打开节点: {0}',
+
   'maa.debug.init-controller-failed': '初始化控制器失败',
   'maa.debug.init-resource-failed': '初始化资源失败',
   'maa.debug.init-instance-failed': '初始化实例失败',

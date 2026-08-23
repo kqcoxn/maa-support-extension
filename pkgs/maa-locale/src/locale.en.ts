@@ -41,6 +41,14 @@ export default {
   'maa.pi.error.generate-runtime-failed': 'Generate runtime failed: {0}',
   'maa.pi.warning.require-admin': 'Controller require admin privileges',
 
+  'maa.mpe.title.select-node-definition': 'Select definition of node {0}',
+  'maa.mpe.error.no-resource': 'No Pipeline resource is available',
+  'maa.mpe.error.node-not-found': 'Cannot find node {0}',
+  'maa.mpe.error.open-node-failed': 'Cannot open node {0} in MPE',
+  'maa.mpe.error.navigation-failed': 'Failed to navigate to node {0}',
+  'maa.mpe.info.navigation-cancelled': 'Node navigation cancelled',
+  'maa.mpe.info.node-opened': 'Opened node {0}',
+
   'maa.debug.init-controller-failed': 'Init controller failed',
   'maa.debug.init-resource-failed': 'Init resource failed',
   'maa.debug.init-instance-failed': 'Init instance failed',
