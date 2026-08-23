@@ -126,8 +126,10 @@ export class MpeService extends BaseService {
         return { success: false, message: '当前没有可用的 Pipeline 资源' }
       }
 
-      await intBundle.flush()
-      const targets = intBundle.topLayer.getTask(nodeName as TaskName).flatMap(({ infos }) => infos)
+      await intBundle.flush(true)
+      const targets = intBundle.topLayer
+        .getTask(nodeName as TaskName, false)
+        .flatMap(({ infos }) => infos)
       if (targets.length === 0) {
         return { success: false, message: `未找到节点: ${nodeName}` }
       }
@@ -380,10 +382,9 @@ frame.addEventListener('load',()=>api.postMessage({builtin:'mpe-host-ready'}));
     if (!intBundle) return []
 
     try {
-      await intBundle.flush()
+      await intBundle.flush(true)
       const currentFile = this.document.uri.fsPath
       return intBundle.topLayer.getAnchorList().map(([anchorName, decl]) => {
-        // getAnchorList exposes the anchor variant, but returns the complete indexed declaration.
         const file = (decl as typeof decl & { file: AbsolutePath }).file
         return {
           anchorName,

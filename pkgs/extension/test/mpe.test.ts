@@ -82,7 +82,7 @@ test('MPE host delegates embedded node navigation to the existing task index', (
   assert.equal(mpeProtocolVersion, '1.4.0')
   assert.match(source, /hostNodeNavigation: true/)
   assert.match(source, /case 'mpe:navigateNodeRequest':/)
-  assert.match(source, /topLayer\s*\.getTask\(nodeName as TaskName\)/)
+  assert.match(source, /topLayer\s*\.getTask\(nodeName as TaskName, false\)/)
   assert.match(source, /vscode\.window\.showTextDocument\(document, \{ preview: false \}\)/)
   assert.match(source, /this\.open\(document\.uri, nodeName\)/)
   assert.match(source, /type: 'mpe:navigateNodeResult'/)
