@@ -2,6 +2,7 @@ import { randomUUID } from 'node:crypto'
 import * as path from 'node:path'
 import * as vscode from 'vscode'
 
+import { t } from '@nekosu/maa-locale'
 import type { AbsolutePath, TaskName } from '@nekosu/maa-pipeline-manager'
 
 import { isMaaAssistantArknights } from '../utils/fs'
@@ -123,7 +124,7 @@ export class MpeService extends BaseService {
     try {
       const intBundle = interfaceService.interfaceBundle
       if (!intBundle) {
-        return { success: false, message: '当前没有可用的 Pipeline 资源' }
+        return { success: false, message: t('maa.mpe.error.no-resource') }
       }
 
       await intBundle.flush(true)
@@ -131,20 +132,24 @@ export class MpeService extends BaseService {
         .getTask(nodeName as TaskName, false)
         .flatMap(({ infos }) => infos)
       if (targets.length === 0) {
-        return { success: false, message: `未找到节点: ${nodeName}` }
+        return { success: false, message: t('maa.mpe.error.node-not-found', nodeName) }
       }
 
       let target = targets[0]
       if (targets.length > 1) {
+        const labels = targets.map(item => rootService.relativeToRoot(item.file))
+        const counts = new Map<string, number>()
+        for (const label of labels) counts.set(label, (counts.get(label) ?? 0) + 1)
         const selected = await vscode.window.showQuickPick(
-          targets.map(item => ({
-            label: rootService.relativeToRoot(item.file),
+          targets.map((item, index) => ({
+            label:
+              counts.get(labels[index])! > 1 ? `${labels[index]} (${index + 1})` : labels[index],
             item
           })),
-          { title: `选择节点 ${nodeName} 的定义` }
+          { title: t('maa.mpe.title.select-node-definition', nodeName) }
         )
         if (!selected) {
-          return { success: false, message: '已取消节点跳转' }
+          return { success: false, message: t('maa.mpe.info.navigation-cancelled') }
         }
         target = selected.item
       }
@@ -157,12 +162,12 @@ export class MpeService extends BaseService {
       editor.revealRange(selection)
 
       if (!(await this.open(document.uri, nodeName))) {
-        return { success: false, message: `无法在 MPE 中打开节点: ${nodeName}` }
+        return { success: false, message: t('maa.mpe.error.open-node-failed', nodeName) }
       }
-      return { success: true, message: `已打开节点: ${nodeName}` }
+      return { success: true, message: t('maa.mpe.info.node-opened', nodeName) }
     } catch (error) {
       logger.error(`Failed to navigate to MPE node ${nodeName}: ${String(error)}`)
-      return { success: false, message: `节点跳转失败: ${nodeName}` }
+      return { success: false, message: t('maa.mpe.error.navigation-failed', nodeName) }
     }
   }
 
