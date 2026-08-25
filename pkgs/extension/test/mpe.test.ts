@@ -248,6 +248,31 @@ test('parses MPE-owned integrated and separated save payloads', () => {
   assert.equal(separated.mode, 'separated')
   assert.deepEqual(separated.pipeline, { Start: {} })
   assert.equal(separated.config?.file_config.filename, 'fight.json')
+
+  const legacy = parseMpeSavePayload({ data: { Start: {} } })
+  assert.equal(legacy.mode, undefined)
+})
+
+test('rejects invalid MPE save payloads', () => {
+  const validConfig = { file_config: {}, node_configs: {} }
+
+  assert.throws(
+    () => parseMpeSavePayload({ mode: 'future', data: { Start: {} } }),
+    /mode must be integrated or separated/
+  )
+  assert.throws(
+    () => parseMpeSavePayload({ mode: 'integrated' }),
+    /Integrated MPE save requires data/
+  )
+  assert.throws(
+    () => parseMpeSavePayload({ mode: 'separated', config: validConfig }),
+    /Separated MPE save requires pipeline and config/
+  )
+  assert.throws(
+    () => parseMpeSavePayload({ mode: 'separated', pipeline: { Start: {} } }),
+    /Separated MPE save requires pipeline and config/
+  )
+  assert.throws(() => parseMpeSavePayload({ data: [] }), /MPE save data must be an object/)
 })
 
 test('merges a sidecar config into pipeline nodes for MPE load', () => {
@@ -386,11 +411,12 @@ test('MPE host binds the loaded version to the parsed snapshot', () => {
   assert.match(source, /seq !== this\.loadSeq/)
 })
 
-test('MPE host writes pipeline and sidecar in one WorkspaceEdit', () => {
+test('MPE host writes pipeline and manages sidecar in one WorkspaceEdit', () => {
   const source = readFileSync(new URL('../src/service/mpe.ts', import.meta.url), 'utf8')
 
   assert.match(source, /appendSidecarEdit\(edit, sidecarUri, next\.config\)/)
   assert.match(source, /edit\.createFile\(uri, \{/)
+  assert.match(source, /edit\.deleteFile\(sidecarUri, \{ ignoreIfNotExists: true \}\)/)
   assert.match(
     source,
     /edit\.replace\(this\.document\.uri, documentRange\(this\.document\), pipelineText\)/

@@ -624,14 +624,14 @@ frame.addEventListener('load',()=>api.postMessage({builtin:'mpe-host-ready'}));
       const edit = new vscode.WorkspaceEdit()
       if (next) {
         this.appendSidecarEdit(edit, sidecarUri, next.config)
-        this.separatedConfigUri = sidecarUri
-      } else if (save.mode === 'integrated' && sidecar.status === 'ok') {
-        edit.delete(sidecarUri)
-        this.separatedConfigUri = undefined
+      } else if (save.mode === 'integrated' && sidecar.status !== 'missing') {
+        edit.deleteFile(sidecarUri, { ignoreIfNotExists: true })
       }
       edit.replace(this.document.uri, documentRange(this.document), pipelineText)
       if (!(await vscode.workspace.applyEdit(edit)))
         throw new Error('VS Code rejected the document edit')
+      if (next) this.separatedConfigUri = sidecarUri
+      else if (save.mode === 'integrated') this.separatedConfigUri = undefined
       this.loadedDocumentVersion = this.document.version
       this.send({
         protocol: mpeProtocol,

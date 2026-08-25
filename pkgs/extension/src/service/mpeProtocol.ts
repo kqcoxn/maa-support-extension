@@ -81,8 +81,10 @@ export function parseMpeSavePayload(value: unknown): MpeSavePayload {
   const payload = asRecord(value)
   if (!payload) throw new Error('MPE save payload must be an object')
 
-  const mode =
-    payload.mode === 'integrated' || payload.mode === 'separated' ? payload.mode : undefined
+  if (payload.mode !== undefined && payload.mode !== 'integrated' && payload.mode !== 'separated') {
+    throw new Error('MPE save mode must be integrated or separated')
+  }
+  const mode = payload.mode
   const data = payload.data === undefined ? undefined : parseSaveObject(payload.data, 'Pipeline')
   const pipeline =
     payload.pipeline === undefined ? undefined : parseSaveObject(payload.pipeline, 'Pipeline')
